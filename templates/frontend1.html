@@ -1,0 +1,152 @@
+<html>
+<head>
+    <style>
+
+    body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .input textarea {
+            width: 45%;
+            height: 200px;
+            resize: none;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .input select {
+            width: 10%;
+        }
+
+        .output {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .output textarea {
+            width: 45%;
+            height: 200px;
+            resize: none;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .output select {
+            width: 10%;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Language Translator</h1>
+        <div class="input">
+            <textarea id="source" placeholder="Enter text to translate"></textarea>
+            <select id="source-lang">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <!-- Add more options here -->
+            </select>
+        </div>
+        <div class="output">
+            <select id="target-lang">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <!-- Add more options here -->
+            </select>
+            <textarea id="target" placeholder="Translated text" readonly></textarea>
+        </div>
+        <button id="translate" class="button">Translate</button>
+    </div>
+
+    <script>
+        // Get the elements from the document
+        const source = document.getElementById("source");
+        const sourceLang = document.getElementById("source-lang");
+        const target = document.getElementById("target");
+        const targetLang = document.getElementById("target-lang");
+        const translate = document.getElementById("translate");
+
+        // Define a function to call the translation API
+        function translateText() {
+
+          // Get the values of the source text and languages
+          const text = source.value;
+          const from = sourceLang.value;
+          const to = targetLang.value;
+
+          // Check if the text is not empty
+          if (text) {
+
+              // Create a URL for the translation API
+              // Replace YOUR_API_KEY with your own key
+              const url = `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=${from}&to=${to}`;
+
+              // Create a request object with the text and the URL
+              const request = new Request(url, {
+                  method: "POST",
+                  headers: {
+                      "Ocp-Apim-Subscription-Key": "YOUR_API_KEY",
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify([{Text: text}])
+              });
+
+              // Fetch the response from the API
+              fetch(request)
+                .then(response => response.json())
+                .then(data => {
+
+                    // Get the translated text from the data
+                    const translation = data[0].translations[0].text;
+
+                    // Set the target textarea value to the translation
+                    target.value = translation;
+
+                })
+                .catch(error => {
+
+                    // Handle any errors
+                    console.error(error);
+
+                    // Show an alert message
+                    alert("Something went wrong. Please try again.");
+
+                });
+          }
+          else {
+
+              // Show an alert message if the text is empty
+              alert("Please enter some text to translate.");
+          }

@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <body>
+    <form method="POST">
+      <label for="text">Enter Konkani text:</label>
+      <input type="text" name="text" id="text" value="{{ input_text }}">
+      <input type="submit" value="Submit">
+    </form>
+    {% if processed_text %}
+      <p>Processed text: {{ processed_text }}</p>
+    {% endif %}
+  </body>
+</html>
